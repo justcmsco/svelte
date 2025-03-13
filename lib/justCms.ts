@@ -151,6 +151,21 @@ export interface PageFilters {
   };
 }
 
+// Layouts
+export interface LayoutItem {
+  label: string;
+  description: string;
+  uid: string;
+  type: 'text' | 'html' | 'boolean' | 'svg';
+  value: string | boolean;
+}
+
+export interface Layout {
+  id: string;
+  name: string;
+  items: LayoutItem[];
+}
+
 //
 // Integration: createJustCms
 //
@@ -162,6 +177,8 @@ export interface PageFilters {
  * - getPages()
  * - getPageBySlug()
  * - getMenuById()
+ * - getLayoutById()
+ * - getLayoutsByIds()
  *
  * The API token and project ID are taken either from environment variables
  * (PUBLIC_JUSTCMS_TOKEN and PUBLIC_JUSTCMS_PROJECT) or from the optional parameters.
@@ -261,6 +278,22 @@ export function createJustCms(apiToken?: string, projectIdParam?: string) {
     return get<Menu>(`menus/${id}`);
   };
 
+  /**
+   * Retrieves a single layout by its ID.
+   */
+  const getLayoutById = async (id: string): Promise<Layout> => {
+    return get<Layout>(`layouts/${id}`);
+  };
+
+  /**
+   * Retrieves multiple layouts by their IDs.
+   * @param ids Array of layout IDs
+   */
+  const getLayoutsByIds = async (ids: string[]): Promise<Layout[]> => {
+    const idsString = ids.join(';');
+    return get<Layout[]>(`layouts/${idsString}`);
+  };
+
   //
   // Utility functions
   //
@@ -288,6 +321,8 @@ export function createJustCms(apiToken?: string, projectIdParam?: string) {
     getPages,
     getPageBySlug,
     getMenuById,
+    getLayoutById,
+    getLayoutsByIds,
     isBlockHasStyle,
     getLargeImageVariant,
     getFirstImage,
